@@ -1,0 +1,95 @@
+{
+  "dashboard": {
+    "title": "ObservaStack - Application Metrics",
+    "tags": ["prometheus", "flask", "monitoring"],
+    "timezone": "browser",
+    "schemaVersion": 16,
+    "version": 0,
+    "refresh": "5s",
+    "panels": [
+      {
+        "id": 1,
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0},
+        "type": "graph",
+        "title": "Nombre de Requêtes par Seconde",
+        "targets": [
+          {
+            "expr": "rate(app_requests_total[1m])",
+            "legendFormat": "{{endpoint}} - {{method}}",
+            "refId": "A"
+          }
+        ],
+        "yaxes": [
+          {"format": "reqps", "label": "Requêtes/sec"},
+          {"format": "short"}
+        ]
+      },
+      {
+        "id": 2,
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0},
+        "type": "graph",
+        "title": "Temps de Réponse Moyen",
+        "targets": [
+          {
+            "expr": "rate(app_request_duration_seconds_sum[5m]) / rate(app_request_duration_seconds_count[5m])",
+            "legendFormat": "Temps moyen",
+            "refId": "A"
+          }
+        ],
+        "yaxes": [
+          {"format": "s", "label": "Secondes"},
+          {"format": "short"}
+        ]
+      },
+      {
+        "id": 3,
+        "gridPos": {"h": 6, "w": 8, "x": 0, "y": 8},
+        "type": "stat",
+        "title": "Total des Requêtes",
+        "targets": [
+          {
+            "expr": "sum(app_requests_total)",
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "colorMode": "value",
+          "graphMode": "area"
+        }
+      },
+      {
+        "id": 4,
+        "gridPos": {"h": 6, "w": 8, "x": 8, "y": 8},
+        "type": "stat",
+        "title": "Requêtes/min (Actuelles)",
+        "targets": [
+          {
+            "expr": "sum(rate(app_requests_total[1m])) * 60",
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "colorMode": "value",
+          "graphMode": "area"
+        }
+      },
+      {
+        "id": 5,
+        "gridPos": {"h": 6, "w": 8, "x": 16, "y": 8},
+        "type": "stat",
+        "title": "Latence P95",
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(app_request_duration_seconds_bucket[5m]))",
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "colorMode": "value",
+          "graphMode": "area",
+          "unit": "s"
+        }
+      }
+    ]
+  }
+}
